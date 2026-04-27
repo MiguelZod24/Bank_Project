@@ -1,0 +1,52 @@
+# Nombre del workflow
+name: QA Automation Tests
+
+# Cuándo se ejecuta
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Todos los días a las 6:00 AM UTC = 8:00 AM España
+    - cron: '0 6 * * *'
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1 — descarga el código
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # Paso 2 — instala Python 3.11
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Paso 3 — instala las dependencias
+      - name: Instalar dependencias
+        run: |
+          pip install pytest
+          pip install playwright
+          pip install pytest-playwright
+          pip install faker
+          pip install pytest-html
+
+      # Paso 4 — instala los navegadores
+      - name: Instalar navegadores Playwright
+        run: playwright install --with-deps chromium
+
+      # Paso 5 — ejecuta los tests
+      - name: Ejecutar tests
+        run: pytest tests/ -v --html=reports/report.html --self-contained-html
+
+      # Paso 6 — guarda el reporte como artefacto descargable
+      - name: Guardar reporte HTML
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reporte-tests
+          path: reports/report.html
