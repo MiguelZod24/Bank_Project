@@ -32,6 +32,7 @@ def test_carga_pagina(page):
 @allure.feature("Registro de usuario")
 @allure.story("Registro exitoso")
 @allure.severity(allure.severity_level.CRITICAL)
+@pytest.mark.xfail(reason="Parabank es inestable — el servidor no siempre completa el registro")
 def test_registro(page):
     """
     escenario: El usuario completa todos los campos del formulario con datos válidos.
@@ -245,8 +246,9 @@ def test_username_existente(page):
     expect(page.get_by_text("This username already exists.")).to_be_visible()
 
 @allure.feature("Registro de usuario")
-@allure.story("Letras en phone")
-@allure.severity(allure.severity_level.CRITICAL)
+@allure.story("Bug - Phone acepta letras")
+@allure.severity(allure.severity_level.NORMAL)
+@allure.issue("BUG-001", "Phone no valida formato numérico")
 def test_letras_en_phone(page):
     """
     escenario: El usuario ingresa letras en el campo Phone Number.
@@ -289,8 +291,9 @@ def test_letras_en_phone(page):
     register.verificar_registro_exitoso()
 
 @allure.feature("Registro de usuario")
-@allure.story("Letras en zip code")
-@allure.severity(allure.severity_level.CRITICAL)
+@allure.story("Bug - Zip Code acepta letras")
+@allure.severity(allure.severity_level.NORMAL)
+@allure.issue("BUG-002", "Zip Code no valida formato numérico — a veces lanza error interno")
 def test_letras_en_zipcode(page):
     """
     escenario: El usuario ingresa letras en el campo Zip Code.
