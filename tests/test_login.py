@@ -1,7 +1,11 @@
 from playwright.sync_api import expect
 from pages.login_page import LoginPage 
+import allure
 
 
+@allure.feature("Login de usuario")
+@allure.story("Carga de página")
+@allure.severity(allure.severity_level.CRITICAL)
 def test_carga_pagina(page):
     """
     escenario: El usuario navega a la página de LogIn de ParaBank.
@@ -21,7 +25,9 @@ def test_carga_pagina(page):
     expect(page.get_by_text("Password")).to_be_visible()
     expect(page.locator('input[value="Log In"]')).to_be_visible()
 
-
+@allure.feature("Login de usuario")
+@allure.story("Login exitoso")
+@allure.severity(allure.severity_level.CRITICAL)
 def test_login(page):
     """
     escenario: El usuario completa todos los campos del login con datos válidos.

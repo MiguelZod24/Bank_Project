@@ -2,10 +2,14 @@ import pytest
 from playwright.sync_api import expect
 from faker import Faker
 from pages.register_page import RegisterPage
+import allure
 
 # Instancia de Faker para generar datos falsos en cada ejecución
 fake = Faker()
 
+@allure.feature("Registro de usuario")
+@allure.story("Carga de pagina")
+@allure.severity(allure.severity_level.CRITICAL)
 def test_carga_pagina(page):
     """
     escenario: El usuario navega a la página de registro de ParaBank.
@@ -25,6 +29,9 @@ def test_carga_pagina(page):
     expect(register.register_button).to_be_visible()
 
 
+@allure.feature("Registro de usuario")
+@allure.story("Registro exitoso")
+@allure.severity(allure.severity_level.CRITICAL)
 def test_registro(page):
     """
     escenario: El usuario completa todos los campos del formulario con datos válidos.
@@ -85,6 +92,9 @@ def test_registro(page):
     # Verificar que el registro fue exitoso
     register.verificar_registro_exitoso()
 
+@allure.feature("Registro de usuario")
+@allure.story("Campos vacios")
+@allure.severity(allure.severity_level.CRITICAL)
 def test_campos_vacios(page):
     """
     escenario: El usuario hace clic en Register sin completar ningún campo.
@@ -114,6 +124,9 @@ def test_campos_vacios(page):
     expect(page.get_by_text("Password confirmation is required.")).to_be_visible()
 
 
+@allure.feature("Registro de usuario")
+@allure.story("Campo vacio")
+@allure.severity(allure.severity_level.CRITICAL)
 def test_campo_vacio(page):
     """
     escenario: El usuario completa todos los campos excepto First Name.
@@ -148,6 +161,9 @@ def test_campo_vacio(page):
     expect(page.get_by_text("First name is required.")).to_be_visible()
 
 
+@allure.feature("Registro de usuario")
+@allure.story("Passwords no coinciden")
+@allure.severity(allure.severity_level.CRITICAL)
 def test_passwords_no_coinciden(page):
     """
     escenario: El usuario ingresa contraseñas diferentes en Password y Confirm Password.
@@ -186,6 +202,9 @@ def test_passwords_no_coinciden(page):
     # Verificar mensaje de error
     expect(page.get_by_text("Passwords did not match.")).to_be_visible()
 
+@allure.feature("Registro de usuario")
+@allure.story("Username existente")
+@allure.severity(allure.severity_level.CRITICAL)
 @pytest.mark.xfail(reason="Parabank es inestable — el servidor no siempre devuelve el mensaje de error")
 def test_username_existente(page):
     """
@@ -225,7 +244,9 @@ def test_username_existente(page):
     # Verificar mensaje de error
     expect(page.get_by_text("This username already exists.")).to_be_visible()
 
-
+@allure.feature("Registro de usuario")
+@allure.story("Letras en phone")
+@allure.severity(allure.severity_level.CRITICAL)
 def test_letras_en_phone(page):
     """
     escenario: El usuario ingresa letras en el campo Phone Number.
@@ -267,7 +288,9 @@ def test_letras_en_phone(page):
     # Verificar que el registro fue exitoso
     register.verificar_registro_exitoso()
 
-
+@allure.feature("Registro de usuario")
+@allure.story("Letras en zip code")
+@allure.severity(allure.severity_level.CRITICAL)
 def test_letras_en_zipcode(page):
     """
     escenario: El usuario ingresa letras en el campo Zip Code.
