@@ -1,7 +1,4 @@
-# Nombre del workflow
 name: QA Automation Tests
-
-# Cuándo se ejecuta
 on:
   push:
     branches: [ main ]
@@ -26,7 +23,22 @@ jobs:
         with:
           python-version: '3.11'
 
-      # Paso 3 — instala las dependencias
+      # Paso 3 — instala Java (necesario para Allure)
+      - name: Instalar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Paso 4 — instala Allure CLI
+      - name: Instalar Allure
+        run: |
+          wget -q https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          tar -zxf allure-2.27.0.tgz
+          sudo mv allure-2.27.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
+
+      # Paso 5 — instala las dependencias de Python
       - name: Instalar dependencias
         run: |
           pip install pytest
@@ -34,19 +46,25 @@ jobs:
           pip install pytest-playwright
           pip install faker
           pip install pytest-html
+          pip install allure-pytest
 
-      # Paso 4 — instala los navegadores
+      # Paso 6 — instala los navegadores de Playwright
       - name: Instalar navegadores Playwright
         run: playwright install --with-deps chromium
 
-      # Paso 5 — ejecuta los tests
+      # Paso 7 — ejecuta los tests
       - name: Ejecutar tests
         run: pytest tests/ -v --html=reports/report.html --self-contained-html
 
-      # Paso 6 — guarda el reporte como artefacto descargable
-      - name: Guardar reporte HTML
+      # Paso 8 — genera el reporte Allure
+      - name: Generar reporte Allure
+        if: always()
+        run: allure generate reports/allure-results -o reports/allure-report --clean
+
+      # Paso 9 — guarda ambos reportes como artefactos descargables
+      - name: Guardar reportes
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: reporte-tests
-          path: reports/report.html
+          name: reportes-tests
+          path: reports/
