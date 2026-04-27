@@ -1,0 +1,16 @@
+# Caché de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Entorno virtual
+venv/
+.env
+
+# Reportes generados automáticamente
+reports/
+*.html
+
+# IDEs
+.idea/
+.vscode/
