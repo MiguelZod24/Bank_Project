@@ -147,3 +147,38 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: python scripts/crear_issues.py
+
+  # Job de cierre de Issues — cierra automáticamente los Issues de tests que volvieron a pasar
+  cerrar-issues:
+    runs-on: ubuntu-latest
+    needs: crear-issues
+    if: always()
+
+    steps:
+      # Descarga el código del repo para acceder a scripts/cerrar_issues.py
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # Instala Python 3.11
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Instala requests, única dependencia del script
+      - name: Instalar dependencias del script
+        run: pip install requests
+
+      # Descarga el artefacto reporte-ia que contiene analisis_ia.json
+      - name: Descargar artefacto reporte-ia
+        uses: actions/download-artifact@v4
+        with:
+          name: reporte-ia
+          path: reports/
+
+      # Cierra los Issues cuyo test volvió a pasar en esta ejecución
+      - name: Cerrar Issues de tests que volvieron a pasar
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python scripts/cerrar_issues.py
