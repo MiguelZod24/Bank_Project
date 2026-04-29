@@ -18,7 +18,7 @@ OUTPUT_HTML = "reports/reporte_ia.html"
 
 # Configuración de GitHub Models
 ENDPOINT = "https://models.inference.ai.azure.com"
-MODELO = "openai/gpt-4o"
+MODELO = "gpt-4o"
 
 
 def leer_resultados():
