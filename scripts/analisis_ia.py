@@ -12,9 +12,10 @@ import requests
 from datetime import datetime
 
 
-# Directorio de resultados de Allure y ruta del reporte de salida
+# Directorio de resultados de Allure y rutas de salida
 ALLURE_DIR = "reports/allure-results"
 OUTPUT_HTML = "reports/reporte_ia.html"
+OUTPUT_JSON = "reports/analisis_ia.json"  # consumido por el Paso 7 (crear_issues.py)
 
 # Configuración de GitHub Models
 ENDPOINT = "https://models.inference.ai.azure.com"
@@ -393,6 +394,22 @@ def main():
     except requests.RequestException as e:
         print(f"ERROR de red al llamar a GitHub Models: {e}")
         sys.exit(1)
+
+    # Enriquecer cada test del análisis con los datos de Allure (status, suite, error, duración)
+    # para que crear_issues.py tenga toda la información sin releer allure-results
+    mapa_resultados = {r["full_name"]: r for r in resultados}
+    for test_ia in analisis_ia.get("tests", []):
+        resultado = mapa_resultados.get(test_ia["nombre"], {})
+        test_ia["nombre_corto"] = resultado.get("nombre", "")
+        test_ia["suite"] = resultado.get("suite", "")
+        test_ia["status"] = resultado.get("status", "unknown")
+        test_ia["duracion"] = resultado.get("duracion", 0)
+        test_ia["error"] = resultado.get("error", "")
+
+    # Guardar el análisis como JSON para el Paso 7 (crear_issues.py)
+    print(f"Guardando análisis en '{OUTPUT_JSON}'...")
+    with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
+        json.dump(analisis_ia, f, ensure_ascii=False, indent=2)
 
     # Generar el reporte HTML
     print(f"\nGenerando reporte en '{OUTPUT_HTML}'...")
