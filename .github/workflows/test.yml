@@ -67,4 +67,6 @@ jobs:
         if: always()
         with:
           name: reportes-tests
-          path: reports/
+          path: |
+            reports/
+            reporte_po.html
