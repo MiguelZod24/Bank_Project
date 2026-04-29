@@ -87,18 +87,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Ejecuta el análisis de SonarCloud
+      # Ejecuta el análisis de SonarCloud — la configuración viene de sonar-project.properties
       - name: Analisis SonarCloud
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.organization=miguelzod24
-            -Dsonar.projectKey=MiguelZod24_Bank_Project
-            -Dsonar.sources=.
-            -Dsonar.inclusions=tests/**/*.py,pages/**/*.py,scripts/**/*.py,conftest.py
-            -Dsonar.exclusions=reports/**,allure-results/**
 
   # Job de análisis IA — corre siempre después del job tests, incluso si hay tests fallidos
   analisis-ia:
