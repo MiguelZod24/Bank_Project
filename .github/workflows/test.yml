@@ -75,6 +75,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: tests
     if: always()
+    # Fuerza Node.js 24 para evitar el warning de deprecación de Node.js 20
+    # (cutover oficial: 2 de junio de 2026 — adelantamos la migración)
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       # Descarga el código con historial completo (necesario para SonarCloud)
