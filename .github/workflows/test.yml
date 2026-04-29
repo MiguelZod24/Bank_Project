@@ -52,9 +52,9 @@ jobs:
       - name: Instalar navegadores Playwright
         run: playwright install --with-deps chromium
 
-      # Paso 7 — ejecuta los tests
+       # Paso 7 — ejecuta los tests con Allure y pytest-html
       - name: Ejecutar tests
-        run: pytest tests/ -v --html=reports/report.html --self-contained-html
+        run: pytest tests/ -v --html=reports/report.html --self-contained-html --alluredir=reports/allure-results
 
       # Paso 8 — genera el reporte Allure
       - name: Generar reporte Allure
